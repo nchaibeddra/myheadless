@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Plat {
+  id Int @id @default(autoincrement())
+  titre String
+  description String
+  prix Float
+  imageUrl String?
+  imageAlt String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Collection {
+  id Int @id @default(autoincrement())
+  nom String @unique
+  description String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  plats Plat[] @relation("CollectionToPlat")
+}
+
+model _CollectionToPlat {
+  plat Plat @relation(fields: [platId], references: [id], name: "CollectionToPlat")
+  platId Int
+  collection Collection @relation(fields: [collectionId], references: [id], name: "CollectionToPlat")
+  collectionId Int
+
+  @@id([platId, collectionId])
+}

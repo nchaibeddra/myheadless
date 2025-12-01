@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Plats et Collections</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Gestion des Plats et Collections</h1>
+
+        <div class="toolbar">
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Rechercher un plat...">
+        </div>
+        <div>
+            <button onclick="showAddPlatForm()">Ajouter un Plat</button>
+            <button onclick="showAddCollectionForm()">Ajouter une Collection</button>
+        </div>
+    </div>
+
+        <div class="main-content">
+            <div class="plats-column">
+                <h2>Plats</h2>
+                <div id="plats-list"></div>
+            </div>
+
+            <div class="collections-column">
+                <h2>Collections</h2>
+                <div id="collections-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulaire pour ajouter/modifier un plat -->
+    <div id="plat-form-overlay" class="overlay"></div>
+    <form id="plat-form" class="form">
+        <h3 id="plat-form-title">Ajouter un Plat</h3>
+        <input type="hidden" id="plat-id">
+        <div class="form-group">
+            <label for="titre">Titre :</label>
+            <input type="text" id="titre" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description :</label>
+            <textarea id="description" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="prix">Prix :</label>
+            <input type="number" step="0.01" id="prix" required>
+        </div>
+        <div class="form-group">
+            <label for="image">Image :</label>
+            <input type="file" id="image" accept="image/*">
+        </div>
+        <div class="form-group">
+            <label for="image-alt">Texte alternatif pour l'image :</label>
+            <input type="text" id="image-alt">
+        </div>
+        <div class="form-actions">
+            <button type="submit">Enregistrer</button>
+            <button type="button" onclick="hidePlatForm()">Annuler</button>
+        </div>
+    </form>
+
+    <!-- Formulaire pour ajouter/modifier une collection -->
+    <div id="collection-form-overlay" class="overlay"></div>
+    <form id="collection-form" class="form">
+        <h3 id="collection-form-title">Ajouter une Collection</h3>
+        <input type="hidden" id="collection-id">
+        <div class="form-group">
+            <label for="collection-nom">Nom :</label>
+            <input type="text" id="collection-nom" required>
+        </div>
+        <div class="form-group">
+            <label for="collection-description">Description :</label>
+            <textarea id="collection-description"></textarea>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Enregistrer</button>
+            <button type="button" onclick="hideCollectionForm()">Annuler</button>
+        </div>
+    </form>
+
+    <script src="script.js"></script>
+</body>
+</html>

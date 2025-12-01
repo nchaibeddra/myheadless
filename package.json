@@ -1,0 +1,25 @@
+{
+  "name": "my-headless-cms",
+  "version": "1.0.0",
+  "description": "Un headless CMS léger avec Node.js, Express et PostgreSQL",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "prisma generate",
+    "start": "node index.js",
+    "dev": "nodemon src/index.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "multer": "^2.0.2",
+    "prisma": "^5.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
