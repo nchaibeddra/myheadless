@@ -10,14 +10,23 @@ const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuration de multer pour gérer les uploads d'images
-const uploadDir = path.join(__dirname, 'uploads');
+// Déterminer le chemin racine du projet et choisir l'emplacement public/uploads
+const projectRoot = path.resolve(__dirname, '..');
+// Prioriser `root/public` et `root/uploads` si présents (utile pour o2switch/Passenger)
+const candidatePublicRoot = path.join(projectRoot, 'public');
+const candidateUploadsRoot = path.join(projectRoot, 'uploads');
+const publicDir = fs.existsSync(candidatePublicRoot) ? candidatePublicRoot : path.join(__dirname, 'public');
+const uploadDir = fs.existsSync(candidateUploadsRoot) ? candidateUploadsRoot : path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
+    // s'assurer que le dossier d'upload existe
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
@@ -30,7 +39,7 @@ const upload = multer({ storage });
 
 app.use(cors());
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(uploadDir));
 
 // Route pour vérifier le statut du serveur
 app.get('/status', (req, res) => {
@@ -251,16 +260,24 @@ app.delete('/collections/:collectionId/plats/:platId', async (req, res) => {
   }
 });
 
-// Servir les fichiers statiques de l'interface web
-app.use(express.static(path.join(__dirname, 'public')));
+// Servir les fichiers statiques de l'interface web (choisit automatiquement la racine la plus appropriée)
+app.use(express.static(publicDir));
 
 // Route pour servir l'interface web
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 // Démarrer le serveur
-app.listen(PORT, () => {
-  console.log(`Serveur démarré sur le port ${PORT}`);
-  console.log(`Accède à http://localhost:${PORT} pour utiliser l'interface de gestion.`);
-});
+// Exporter l'app pour que Phusion Passenger / autres plateformes puissent l'utiliser.
+// Si ce fichier est exécuté directement (node src/index.js), démarrer le serveur.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Serveur démarré sur le port ${PORT}`);
+    console.log(`Serving static files from ${publicDir}`);
+    console.log(`Uploads directory: ${uploadDir}`);
+    console.log(`Accède à http://localhost:${PORT} pour utiliser l'interface de gestion.`);
+  });
+}
+
+module.exports = app;

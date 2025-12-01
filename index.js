@@ -25,6 +25,15 @@ if (!fs.existsSync(prismaClientPath)) {
   }
 }
 
-// Charger l'application principale
-require('./src/index.js');
+// Charger l'application principale et démarrer le serveur
+const app = require('./src/index.js');
+
+const PORT = process.env.PORT || 3000;
+
+// Si l'app exporte un objet express, démarrer le serveur ici (utile pour `node index.js`)
+if (app && typeof app.listen === 'function') {
+  app.listen(PORT, () => {
+    console.log(`Serveur démarré sur le port ${PORT}`);
+  });
+}
 
